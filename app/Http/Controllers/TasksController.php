@@ -11,7 +11,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-        //
+        $tasks = DB::table('tasks')->get();
     }
 
     /**
