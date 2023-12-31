@@ -15,6 +15,9 @@ use App\Http\Controllers\TaskController;
 |
 */
 
+// Route::middleware('json')->group(function () {
+//     Route::apiResource('tasks', TaskController::class);
+// });
 Route::resource('tasks', TaskController::class);
 
 // Route::resource('tasks.categories');
