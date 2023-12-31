@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +20,6 @@ use App\Http\Controllers\TaskController;
 //     Route::apiResource('tasks', TaskController::class);
 // });
 Route::resource('tasks', TaskController::class);
+Route::resource('tasks/categories', CategoryController::class);
 
 // Route::resource('tasks.categories');
