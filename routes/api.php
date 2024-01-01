@@ -19,7 +19,11 @@ use App\Http\Controllers\CategoryController;
 // Route::middleware('json')->group(function () {
 //     Route::apiResource('tasks', TaskController::class);
 // });
-Route::resource('tasks', TaskController::class);
-Route::resource('tasks/categories', CategoryController::class);
+Route::prefix('todo')->group(function () {
+    Route::apiResources([
+        'tasks' => TaskController::class,
+        'categories' => CategoryController::class,
+    ]);
+});
 
 // Route::resource('tasks.categories');
