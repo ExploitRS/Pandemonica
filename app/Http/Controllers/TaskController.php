@@ -26,6 +26,10 @@ class TaskController extends Controller
 
     }
 
+    public function show(Task $task) {
+        return response()->json($task);
+    }
+
     public function update(StoreTaskRequest $request, Task $task) {
         $task->update($request->all());
         $task->save();
