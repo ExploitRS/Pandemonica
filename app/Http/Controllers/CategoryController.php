@@ -17,6 +17,12 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
 
+    public function show(string $id)
+    {
+        $category = Category::findOrFail($id);
+        return response()->json($category, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
