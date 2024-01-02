@@ -53,4 +53,9 @@ class CategoryController extends Controller
         
         return response()->json($deleted, 204);
     }
+
+    public function tasks(): belongsToMany
+    {
+        return $this->belongsToMany(Task::class);
+    }
 }
