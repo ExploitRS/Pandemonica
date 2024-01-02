@@ -18,4 +18,10 @@ class Task extends Model
     protected $dates = [
         'due_date',
     ];
+
+    public function categories(): belongToMany
+    {
+        return $this->belongsToMany(Category::class);
+
+    }
 }
