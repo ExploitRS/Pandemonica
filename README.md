@@ -12,9 +12,9 @@ To run the server
 ./vendor/bin/sail up
 ```
 
-[!NOTE]
-After starting the server with sail, it is necessary to prepare the DB.
+> [!NOTE]
+> After starting the server with sail, it is necessary to prepare the DB.
 
-```bash
-./vendor/bin/sail artisan migrate
-```
+> ```bash
+> ./vendor/bin/sail artisan migrate
+> ```
