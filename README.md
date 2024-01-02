@@ -18,6 +18,12 @@ And move to the root directory of `Pandemonica`
 cd Pandemonica
 ```
 
+Install dependencies
+
+```bash
+composer i
+```
+
 To run the server
 
 ```bash
@@ -30,3 +36,11 @@ To run the server
 > ```bash
 > ./vendor/bin/sail artisan migrate
 > ```
+
+## API Endpoints
+
+### check by artisan command in project's root directory
+
+```bash
+./vendor/bin/sail artisan route:list -v
+```
