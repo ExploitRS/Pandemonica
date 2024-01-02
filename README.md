@@ -44,3 +44,7 @@ To run the server
 ```bash
 ./vendor/bin/sail artisan route:list -v
 ```
+
+## References
+
+- [laratube](https://github.com/miladev95/laratube)
