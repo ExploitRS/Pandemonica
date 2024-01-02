@@ -42,4 +42,13 @@ class TaskController extends Controller
 
         return response()->json($deleted, 204);
     }
+
+    public function add_category(Task $task, Category $cat) {
+        // Restrict each task to one category as per the specified requirements
+        if  ($task->categories()->count() > 0) {
+            throw new \Exception('This task already has a category');
+        }
+
+        task->categories()->attach($cat);
+    }
 }
