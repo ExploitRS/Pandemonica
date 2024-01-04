@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    public function update(StoreTaskRequest $request, Task $task) {
+    public function update(UpdateTaskRequest $request, Task $task) {
         $task->update($request->all());
         $task->save();
 
@@ -47,6 +48,9 @@ class TaskController extends Controller
         // Restrict each task to one category as per the specified requirements
         if  ($task->categories()->count() > 0) {
             throw new \Exception('This task already has a category');
+        }
+        if  ($task->categories()->count() == 0) {
+            throw new \Exception(¢task->categories());
         }
 
         task->categories()->attach($cat);
