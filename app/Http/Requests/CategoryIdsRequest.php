@@ -12,8 +12,8 @@ class CategoryIdsRequest extends CommonRequest
     public function rules(): array
     {
         return [
-            'category_ids' => 'sometimes|required|distinct:strict|array:category_id|size:1',
-            'category_ids.*' => 'exists:categories,id',
+            'category_ids' => 'required|distinct:strict|array|size:1',
+            'category_ids.*.category_id' => 'integer|min:1|exists:categories,id',
         ];
     }
 
