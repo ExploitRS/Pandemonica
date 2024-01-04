@@ -33,6 +33,8 @@ class CategoryController extends Controller
         ]);
 
         $cat->save();
+
+        return response()->json($cat, 201);
     }
 
     /**
@@ -42,6 +44,8 @@ class CategoryController extends Controller
     {
         $category->update($request->all());
         $category->save();
+
+        return response()->json($category, 200);
     }
 
     /**
@@ -51,11 +55,8 @@ class CategoryController extends Controller
     {
         $deleted = $category->delete();
         
-        return response()->json($deleted, 204);
-    }
-
-    public function tasks(): belongsToMany
-    {
-        return $this->belongsToMany(Task::class);
+        return response()->json([
+            'message' => 'Category deleted successfully',
+        ], 200);
     }
 }
