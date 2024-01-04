@@ -58,24 +58,12 @@ class TaskCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Task $task)
     {
-        //
+        $task->categories()->detach();
+
+        return response()->json([
+            'message' => 'The category of the task were deleted successfully',
+        ], 200);
     }
-
-    // protected function add_category(Task $task, Category $cat) {
-    //     // Restrict each task to one category as per the specified requirements
-    //     if  ($task->categories()->count() > 0) {
-    //         return response()->json([
-    //             "message" => "This task already has a category"
-    //         ], 400);
-    //     }
-
-    //     // $task->categories()->attach($cat_id);
-    //     $task->categories()->attach($cat);
-
-    //     return response()->json([
-    //         'message' => 'Category added successfully',
-    //     ], 200);
-    // }
 }
