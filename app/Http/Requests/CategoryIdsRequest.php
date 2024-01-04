@@ -2,22 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Controllers\Traits\Response;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
-
-class CategoryIdsRequest extends FormRequest
+class CategoryIdsRequest extends CommonRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,13 +17,14 @@ class CategoryIdsRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
+    public function messages()
     {
-        throw new HttpResponseException(
-            response()->json([
-                'message' => 'The given data was invalid.',
-                'data' => $validator->errors(),
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
-        );
+        return [
+            'category_ids.required' => 'The category is required',
+            'category_ids.distinct' => 'The category must be unique',
+            'category_ids.array' => 'The category must be an array',
+            'category_ids.size' => 'The category must contain exactly one element',
+            'category_ids.*.exists' => 'The category must exist in the database',
+        ];
     }
 }
