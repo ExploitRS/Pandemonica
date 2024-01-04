@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TaskCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::prefix('todo')->group(function () {
         'tasks' => TaskController::class,
         'categories' => CategoryController::class,
     ]);
+    Route::apiresource('tasks.categories', TaskCategoryController::class)->except(['show']);
 });
 
 // Route::resource('tasks.categories');
