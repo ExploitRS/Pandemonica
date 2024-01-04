@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Models\Category;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
@@ -31,6 +32,12 @@ class TaskController extends Controller
         ]);
 
         $task->save();
+
+        if ($request->has('category_ids')) {
+            $cat_id = $request->input('category_ids')[0]['category_id'];
+            $cat = Category::find($cat_id);
+            $this->service->add_category($task, $cat);
+        }
 
         return response()->json($task, 201);
     }
