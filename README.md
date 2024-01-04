@@ -1,7 +1,7 @@
 <div align="center">
     <p align="center">
         <a href="https://helltaker.fandom.com/wiki/Pandemonica">
-            <img src="https://cdn.donmai.us/original/b9/a1/__pandemonica_helltaker_drawn_by_sillyzer0__b9a135a14d1a049a94f92ea7ea5b7406.png" width="500" alt="Pandemonica portrait">
+            <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/85566220/294228806-199a2c22-d975-4e5c-9755-582e4a9c2f57.png" width="500" alt="Pandemonica portrait">
         </a>
     </p>
     <h1>Pandemonica</h1>
