@@ -26,7 +26,6 @@ class TaskController extends Controller
         $task->save();
 
         return response()->json($task, 201);
-
     }
 
     public function show(Task $task) {
@@ -37,7 +36,7 @@ class TaskController extends Controller
         $task->update($request->all());
         $task->save();
 
-        // return response()->json($task);
+        return response()->json($task, 200);
     }
 
     public function destroy(Task $task) {
