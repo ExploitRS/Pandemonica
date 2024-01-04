@@ -42,7 +42,9 @@ class TaskController extends Controller
     public function destroy(Task $task) {
         $deleted = $task->delete();
 
-        return response()->json($deleted, 204);
+        return response()->json([
+            'message' => 'Task deleted successfully',
+        ], 200);
     }
 
     public function add_category(Task $task, Category $cat) {
