@@ -47,6 +47,24 @@ To run the server
 > ./vendor/bin/sail artisan migrate
 > ```
 
+## Test
+
+To run the tests
+
+```bash
+./vendor/bin/sail artisan test
+```
+
+To run tests for a specific feature
+
+```bash
+// Run tests for the Tasks feature
+./vendor/bin/sail artisan test --filter TasksTest
+
+// Run tests for the Categories feature
+./vendor/bin/sail artisan test --filter CategoriesTest
+```
+
 ## API Endpoints
 
 ### check by artisan command in project's root directory
