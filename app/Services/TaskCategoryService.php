@@ -24,4 +24,19 @@ class TaskCategoryService
             'message' => 'Category added successfully',
         ], 200);
     }
+
+    public function update_category(Task $task, Category $cat): JsonResponse
+    {
+        if ($task->categories()->count() == 0) {
+            return response()->json([
+                "message" => "This task does not have a category"
+            ], 400);
+        }
+
+        $task->categories()->sync($cat);
+
+        return response()->json([
+            'message' => 'Category updated successfully',
+        ], 200);
+    }
 }
