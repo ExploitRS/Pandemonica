@@ -50,10 +50,19 @@ class TaskController extends Controller
     }
 
     public function update(UpdateTaskRequest $request, Task $task) {
-        $task->update($request->all());
+        $task->update($request->except('category_ids'));
         $task->save();
 
-        return response()->json($task, 200);
+        $response = ['task' => $task];
+
+        if ($request->has('category_ids')) {
+            $cat_id = $request->input('category_ids')[0]['category_id'];
+            $cat = Category::find($cat_id);
+            $updated = $this->service->update_category($task, $cat);
+            $response['category'] = $updated->original;
+        }
+
+        return response()->json($response, 200);
     }
 
     public function destroy(Task $task) {
