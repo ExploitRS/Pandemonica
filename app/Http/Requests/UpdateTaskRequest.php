@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class UpdateTaskRequest extends CommonRequest
+class UpdateTaskRequest extends TaskRequest
 {
     /**
      * Get the validation rules that apply to the request.
