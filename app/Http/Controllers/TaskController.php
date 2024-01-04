@@ -25,6 +25,8 @@ class TaskController extends Controller
 
         $task->save();
 
+        return response()->json($task, 201);
+
     }
 
     public function show(Task $task) {
