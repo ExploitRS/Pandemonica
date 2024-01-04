@@ -14,12 +14,14 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
+
         return response()->json($categories);
     }
 
     public function show(string $id)
     {
         $category = Category::findOrFail($id);
+
         return response()->json($category, 200);
     }
 
