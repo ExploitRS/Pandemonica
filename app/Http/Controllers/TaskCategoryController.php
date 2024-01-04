@@ -6,16 +6,24 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CategoryIdsRequest;
 use App\Models\Task;
 use App\Models\Category;
-use App\Http\Controllers\TaskController;
+use App\Services\TaskCategoryService;
 
 class TaskCategoryController extends Controller
 {
+    private $service;
+
+    public function __construct(TaskCategoryService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Task $task)
     {
-        //
+        $categories = $task->categories;
+        return response()->json($categories, 200);
     }
 
     /**
@@ -24,9 +32,11 @@ class TaskCategoryController extends Controller
     public function store(Task $task, CategoryIdsRequest $request)
     {
         $cat_id = $request->input('category_ids')[0]['category_id'];
-        echo $cat_id;
         $cat = Category::find($cat_id);
-        add_category($task, $cat);
+
+        // return $this->add_category($task, $cat);
+        // return $this->serv->add_category($task, $cat);
+        return $this->service->add_category($task, $cat);
     }
 
     /**
@@ -52,4 +62,20 @@ class TaskCategoryController extends Controller
     {
         //
     }
+
+    // protected function add_category(Task $task, Category $cat) {
+    //     // Restrict each task to one category as per the specified requirements
+    //     if  ($task->categories()->count() > 0) {
+    //         return response()->json([
+    //             "message" => "This task already has a category"
+    //         ], 400);
+    //     }
+
+    //     // $task->categories()->attach($cat_id);
+    //     $task->categories()->attach($cat);
+
+    //     return response()->json([
+    //         'message' => 'Category added successfully',
+    //     ], 200);
+    // }
 }
