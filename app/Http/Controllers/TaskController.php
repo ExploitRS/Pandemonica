@@ -33,13 +33,16 @@ class TaskController extends Controller
 
         $task->save();
 
+        $response = ['task' => $task];
+
         if ($request->has('category_ids')) {
             $cat_id = $request->input('category_ids')[0]['category_id'];
             $cat = Category::find($cat_id);
-            $this->service->add_category($task, $cat);
+            $added = $this->service->add_category($task, $cat);
+            $response['category'] = $added->original;
         }
 
-        return response()->json($task, 201);
+        return response()->json($response, 201);
     }
 
     public function show(Task $task) {
