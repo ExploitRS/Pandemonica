@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
-use Illuminate\Http\Request;
+use App\Services\TaskCategoryService;
 
 class TaskController extends Controller
 {
+    private $service;
+
+    public function __construct(TaskCategoryService $service)
+    {
+        $this->service = $service;
+    }
     //
     public function index() {
         $tasks = Task::all();
@@ -45,17 +52,5 @@ class TaskController extends Controller
         return response()->json([
             'message' => 'Task deleted successfully',
         ], 200);
-    }
-
-    public function add_category(Task $task, Category $cat) {
-        // Restrict each task to one category as per the specified requirements
-        if  ($task->categories()->count() > 0) {
-            throw new \Exception('This task already has a category');
-        }
-        if  ($task->categories()->count() == 0) {
-            throw new \Exception(¢task->categories());
-        }
-
-        task->categories()->attach($cat);
     }
 }
