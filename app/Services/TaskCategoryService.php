@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
