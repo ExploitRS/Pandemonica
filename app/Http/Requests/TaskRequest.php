@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 class TaskRequest extends CommonRequest
 {
     public function messages()
