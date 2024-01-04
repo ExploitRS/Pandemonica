@@ -15,4 +15,12 @@ class CategoryRequest extends CommonRequest
             'label' => 'required|string|max:255',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'label.required' => 'A label is required',
+            'label.max' => 'A label cannot be longer than 255 characters',
+        ];
+    }
 }
