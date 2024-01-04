@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\belongToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Task extends Model
 {
@@ -20,9 +21,9 @@ class Task extends Model
         'due_date',
     ];
 
-    public function categories(): belongToMany
+    public function categories(): belongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, "category_task");
 
     }
 }
