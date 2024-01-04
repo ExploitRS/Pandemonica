@@ -65,9 +65,9 @@ To run tests for a specific feature
 ./vendor/bin/sail artisan test --filter CategoriesTest
 ```
 
-## API Endpoints
+## API endpoints
 
-### check by artisan command in project's root directory
+To display the valid API endpoints
 
 ```bash
 ./vendor/bin/sail artisan route:list -v
