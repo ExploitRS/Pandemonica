@@ -47,7 +47,9 @@ To run the server
 > ./vendor/bin/sail artisan migrate
 > ```
 
-## Test
+## for Developers
+
+### Test
 
 To run the tests
 
@@ -65,7 +67,7 @@ To run tests for a specific feature
 ./vendor/bin/sail artisan test --filter CategoriesTest
 ```
 
-## API endpoints
+### API endpoints
 
 To display the valid API endpoints
 
