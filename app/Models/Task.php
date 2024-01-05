@@ -21,6 +21,10 @@ class Task extends Model
         'due_date',
     ];
 
+    protected $casts = [
+        'is_done' => 'boolean',
+    ];
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
