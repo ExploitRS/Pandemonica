@@ -17,7 +17,6 @@ class TaskCategoryService
             ], 400);
         }
 
-        // $task->categories()->attach($cat_id);
         $task->categories()->attach($cat);
 
         return response()->json($cat, 200);
