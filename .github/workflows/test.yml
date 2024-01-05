@@ -36,6 +36,9 @@ jobs:
       - name: composer install
         run: docker run --rm -u "$(id -u)" -v $(pwd):/src -w /src laravelsail/php81-composer:latest composer i --ignore-platform-reqs
 
+      - name: start mysql
+        run: ./vendor/bin/sail up -d mysql
+
       - name: start
         run: ./vendor/bin/sail up -d
 
