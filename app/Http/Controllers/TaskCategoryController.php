@@ -34,8 +34,6 @@ class TaskCategoryController extends Controller
         $cat_id = $request->input('category_ids')[0]['category_id'];
         $cat = Category::find($cat_id);
 
-        // return $this->add_category($task, $cat);
-        // return $this->serv->add_category($task, $cat);
         return $this->service->add_category($task, $cat);
     }
 
