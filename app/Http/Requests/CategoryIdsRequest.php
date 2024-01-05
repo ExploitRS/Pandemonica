@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+
 class CategoryIdsRequest extends CommonRequest
 {
     /**
@@ -27,8 +31,15 @@ class CategoryIdsRequest extends CommonRequest
             'category_ids.*.exists' => 'The category must exist in the database',
             'category_ids.*.category_id.exists' => 'The category must exist in the database',
             'category_ids.*.category_id.integer' => 'The category must be an integer',
-            'category_ids.*.category_id.exists' => 'The category must exist in the database',
             'category_ids.*.category_id.min' => 'The category must be at least 1',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = ['message' => 'The given data was invalid.', 'errors' => []];
+        $response['errors']['category'] = $validator->errors()->all();
+
+        throw new HttpResponseException(response()->json($response, JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }
