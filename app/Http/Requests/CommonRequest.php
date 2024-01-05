@@ -26,7 +26,7 @@ class CommonRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'message' => 'The given data was invalid.',
-                'data' => $validator->errors(),
+                'errors' => $validator->errors(),
             ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
             // $this->errorResponse($validator->errors(),JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
         );
