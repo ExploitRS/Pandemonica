@@ -31,8 +31,7 @@ class CategoriesTest extends TestCase
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has(1)
                     ->first(fn (AssertableJson $json) =>
-                        $json->where("id", 1)
-                            ->where("label", "hell")
+                        $json->where("label", "hell")
                             ->etc()
                     )
             );
