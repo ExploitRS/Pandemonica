@@ -47,7 +47,7 @@ To run the server
 > ./vendor/bin/sail artisan migrate
 > ```
 
-## for Developers
+## Development
 
 ### Test
 
