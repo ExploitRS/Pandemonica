@@ -25,6 +25,10 @@ class CategoryIdsRequest extends CommonRequest
             'category_ids.array' => 'The category must be an array',
             'category_ids.size' => 'The category must contain exactly one element',
             'category_ids.*.exists' => 'The category must exist in the database',
+            'category_ids.*.category_id.exists' => 'The category must exist in the database',
+            'category_ids.*.category_id.integer' => 'The category must be an integer',
+            'category_ids.*.category_id.exists' => 'The category must exist in the database',
+            'category_ids.*.category_id.min' => 'The category must be at least 1',
         ];
     }
 }
