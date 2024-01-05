@@ -91,7 +91,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "title" => [
                         "The title is required"
                     ]
@@ -109,7 +109,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "title" => [
                         "The title cannot be longer than 255 characters"
                     ]
@@ -130,7 +130,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "due_date" => [
                         "The due date must be a valid date"
                     ]
@@ -183,7 +183,7 @@ class TasksTest extends TestCase
                     ->where('task.title', 'Singularity')
                     ->where('task.description', 'The concept and the term *singularity* were popularized by Vernor Vinge')
                     ->where('task.due_date', '2045-01-01 00:00:00')
-                    ->has('category')
+                ->has('category')
                     ->where('category', null)
                     ->etc()
             );
@@ -267,7 +267,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "title" => [
                         "The title is required"
                     ]
@@ -287,7 +287,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "due_date" => [
                         "The due date must be a valid date"
                     ]
@@ -307,7 +307,7 @@ class TasksTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "due_date" => [
                         "The due date must be today or later"
                     ]
@@ -333,10 +333,114 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(201)
             ->assertJson(fn (AssertableJson $json) =>
-                $json->has('category')
+                $json->has('task')
+                    ->where('task.id', 21)
+                    ->where('task.title', 'go to hell')
+                    ->where('task.description', 'welcome to the hell')
+                    ->where('task.due_date', '2045-01-01')
+                ->has('category')
                     ->where('category.id', 20)
                     ->where('category.label', 'hell')
                     ->etc()
+            );
+    }
+
+    public function test_store_failure_not_found_category(): void
+    {
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [
+                ['category_id' => 100],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must exist in the database"])
+            );
+    }
+
+    public function test_store_failure_empty_category_ids(): void
+    {
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category_ids', ["The category is required"])
+            );
+    }
+
+    public function test_store_failure_multiple_category(): void
+    {
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [
+                ['category_id' => 1],
+                ['category_id' => 2],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category_ids', ["The category must contain exactly one element"])
+            );
+    }
+
+    public function test_store_failure_less_than_one_category(): void
+    {
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [
+                ['category_id' => 0],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must be at least 1"])
+            );
+    }
+
+    public function test_store_failure_string_category(): void
+    {
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [
+                ['category_id' => 'hell'],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must be an integer"])
             );
     }
 }
