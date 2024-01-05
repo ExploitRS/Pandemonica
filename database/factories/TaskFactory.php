@@ -20,6 +20,7 @@ class TaskFactory extends Factory
             'title' => fake()->name(),
             'description' => fake()->text(),
             'due_date' => fake()->date(),
+            'is_done' => fake()->boolean(),
         ];
     }
 }
