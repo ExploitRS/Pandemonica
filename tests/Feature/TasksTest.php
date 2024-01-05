@@ -7,33 +7,41 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Testing\Fluent\AssertableJson;
 
+use App\Models\Task;
+use App\Models\Category;
+
 class TasksTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $path = '/api/todo/tasks/';
+    private $tasks_path = '/api/todo/tasks/';
+    private $categories_path = '/api/todo/categories/';
 
     protected function setUp(): void
     {
         parent::setUp();
         
-        $this->postJson($this->path, [
+        $this->postJson($this->tasks_path, [
             'title' => 'Singularity',
             'description' => 'The concept and the term *singularity* were popularized by Vernor Vinge',
             'due_date' => '2045-01-01',
+        ]);
+
+        $this->postJson($this->categories_path, [
+            'label' => 'hell',
         ]);
     }
 
     public function test_index(): void
     {
-        $response = $this->get($this->path);
+        $response = $this->get($this->tasks_path);
 
         $response->assertStatus(200);
     }
 
     public function test_store_success(): void
     {
-        $response = $this->postJson($this->path, [
+        $response = $this->postJson($this->tasks_path, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-10-10',
@@ -44,7 +52,7 @@ class TasksTest extends TestCase
 
     public function test_index_after_store(): void
     {
-        $response = $this->get($this->path);
+        $response = $this->get($this->tasks_path);
 
         $response
             ->assertStatus(200)
@@ -62,7 +70,7 @@ class TasksTest extends TestCase
 
     public function test_store_failure_due_date(): void
     {
-        $response = $this->post($this->path, [
+        $response = $this->post($this->tasks_path, [
             'title' => 'Test task',
             'description' => 'Test description',
             'due_date' => '2020-10-10',
@@ -73,7 +81,7 @@ class TasksTest extends TestCase
 
     public function test_store_failure_empty_title(): void
     {
-        $response = $this->post($this->path, [
+        $response = $this->post($this->tasks_path, [
             'title' => '',
             'description' => 'Test description',
             'due_date' => '2045-10-10',
@@ -93,7 +101,7 @@ class TasksTest extends TestCase
 
     public function test_store_failure_max_title(): void
     {
-        $response = $this->post($this->path, [
+        $response = $this->post($this->tasks_path, [
             'title' => 'Lorem ipsum dolor sit amet, consectetu adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.',
         ]);
 
@@ -112,7 +120,7 @@ class TasksTest extends TestCase
 
     public function test_store_failure_invalid_due_date(): void
     {
-        $response = $this->post($this->path, [
+        $response = $this->post($this->tasks_path, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2020',
@@ -132,7 +140,7 @@ class TasksTest extends TestCase
 
     public function test_delete_success(): void
     {
-        $response = $this->deleteJson($this->path . "9");
+        $response = $this->deleteJson($this->tasks_path . "9");
 
         $response
             ->assertStatus(200)
@@ -143,7 +151,7 @@ class TasksTest extends TestCase
 
     public function test_delete_failure_deleted(): void
     {
-        $response = $this->deleteJson($this->path . "1");
+        $response = $this->deleteJson($this->tasks_path . "1");
 
         $response
             ->assertStatus(404)
@@ -154,7 +162,7 @@ class TasksTest extends TestCase
 
     public function test_delete_failure_not_found(): void
     {
-        $response = $this->deleteJson($this->path . "100");
+        $response = $this->deleteJson($this->tasks_path . "100");
 
         $response
             ->assertStatus(404)
@@ -165,21 +173,25 @@ class TasksTest extends TestCase
 
     public function test_show_success(): void
     {
-        $response = $this->get($this->path . '12');
+        $response = $this->get($this->tasks_path . '12');
 
         $response
             ->assertStatus(200)
-            ->assertJson([
-                "id" => 12,
-                'title' => 'Singularity',
-                'description' => 'The concept and the term *singularity* were popularized by Vernor Vinge',
-                'due_date' => '2045-01-01 00:00:00',
-            ]);
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('task')
+                    ->where('task.id', 12)
+                    ->where('task.title', 'Singularity')
+                    ->where('task.description', 'The concept and the term *singularity* were popularized by Vernor Vinge')
+                    ->where('task.due_date', '2045-01-01 00:00:00')
+                    ->has('category')
+                    ->where('category', null)
+                    ->etc()
+            );
     }
 
     public function test_show_failure_not_found(): void
     {
-        $response = $this->get($this->path . '1');
+        $response = $this->get($this->tasks_path . '1');
 
         $response
             ->assertStatus(404)
@@ -190,7 +202,7 @@ class TasksTest extends TestCase
 
     public function test_update_success(): void
     {
-        $response = $this->putJson($this->path . '14', [
+        $response = $this->putJson($this->tasks_path . '14', [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -198,17 +210,19 @@ class TasksTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJson([
-                "id" => 14,
-                'title' => 'go to hell',
-                'description' => 'welcome to the hell',
-                'due_date' => '2045-01-01',
-            ]);
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('task')
+                    ->where('task.id', 14)
+                    ->where('task.title', 'go to hell')
+                    ->where('task.description', 'welcome to the hell')
+                    ->where('task.due_date', '2045-01-01')
+                    ->etc()
+            );
     }
 
     public function test_update_success_patch_method(): void
     {
-        $response = $this->patchJson($this->path . '15', [
+        $response = $this->patchJson($this->tasks_path . '15', [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -216,17 +230,19 @@ class TasksTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJson([
-                "id" => 15,
-                'title' => 'go to hell',
-                'description' => 'welcome to the hell',
-                'due_date' => '2045-01-01',
-            ]);
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('task')
+                    ->where('task.id', 15)
+                    ->where('task.title', 'go to hell')
+                    ->where('task.description', 'welcome to the hell')
+                    ->where('task.due_date', '2045-01-01')
+                    ->etc()
+            );
     }
 
     public function test_update_failure_not_found(): void
     {
-        $response = $this->putJson($this->path . '1', [
+        $response = $this->putJson($this->tasks_path . '1', [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -241,7 +257,7 @@ class TasksTest extends TestCase
 
     public function test_update_failure_empty_title(): void
     {
-        $response = $this->putJson($this->path . '17', [
+        $response = $this->putJson($this->tasks_path . '17', [
             'title' => '',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -261,7 +277,7 @@ class TasksTest extends TestCase
 
     public function test_update_failure_invalid_due_date(): void
     {
-        $response = $this->putJson($this->path . '18', [
+        $response = $this->putJson($this->tasks_path . '18', [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2020',
@@ -281,7 +297,7 @@ class TasksTest extends TestCase
 
     public function test_update_failure_before_today(): void
     {
-        $response = $this->putJson($this->path . '19', [
+        $response = $this->putJson($this->tasks_path . '19', [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '1969-12-31',
@@ -297,5 +313,30 @@ class TasksTest extends TestCase
                     ]
                 ]
             ]);
+    }
+
+    public function test_store_success_with_category(): void
+    {
+        $category = Category::factory()->create([
+            'label' => 'hell',
+        ]);
+
+        $response = $this->postJson($this->tasks_path, [
+            'title' => 'go to hell',
+            'description' => 'welcome to the hell',
+            'due_date' => '2045-01-01',
+            'category_ids' => [
+                ['category_id' => $category->id],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(201)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('category')
+                    ->where('category.id', 20)
+                    ->where('category.label', 'hell')
+                    ->etc()
+            );
     }
 }
