@@ -14,6 +14,7 @@ class Task extends Model
         'title',
         'description',
         'due_date',
+        'is_done',
     ];
 
     protected $dates = [
