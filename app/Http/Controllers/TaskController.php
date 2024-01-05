@@ -20,7 +20,7 @@ class TaskController extends Controller
     }
     //
     public function index() {
-        $tasks = Task::all();
+        $tasks = Task::with('categories')->get();
         return response()->json($tasks);
     }
 
