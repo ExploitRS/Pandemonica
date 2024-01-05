@@ -19,8 +19,17 @@ class TaskController extends Controller
         $this->service = $service;
     }
     //
-    public function index() {
-        $tasks = Task::with('categories')->get();
+    public function index(Request $request) {
+        $cat = $request->query('category');
+
+        if ($cat) {
+            $tasks = Task::whereHas('categories', function ($query) use ($cat) {
+                $query->where('label', $cat);
+            })->with('categories')->get();
+        } else {
+            $tasks = Task::with('categories')->get();
+        }
+
         return response()->json($tasks);
     }
 
