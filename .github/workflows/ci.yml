@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  push:
+    paths-ignore:
+      - 'LICENCE'
+      - '*.md'
+
+    branches:
+      - main
+
+  pull_request:
+    paths-ignore:
+      - 'LICENCE'
+      - '*.md'
+
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: composer install
+        run: docker run --rm -u "$(id -u)" -v $(pwd):/src -w /src laravelsail/php81-composer:latest composer i --ignore-platform-reqs
+
+      - name: start
+        run: ./vendor/bin/sail up -d
+
+      - name: migrate
+        run: ./vendor/bin/sail artisan migrate
+      
+      - name: test
+        run: ./vendor/bin/sail test
