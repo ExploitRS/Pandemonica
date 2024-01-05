@@ -56,9 +56,15 @@ class TaskCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task, Category $category)
     {
-        $task->categories()->detach();
+        if (!$task->categories()->find($category->id)) {
+            return response()->json([
+                'message' => 'The category is not associated with the task',
+            ], 404);
+        }
+
+        $task->categories()->detach($category);
 
         return response()->json([
             'message' => 'The category of the task were deleted successfully',
