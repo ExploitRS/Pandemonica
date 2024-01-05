@@ -29,6 +29,7 @@ class TaskController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'due_date' => $request->due_date,
+            'is_done' => $request->is_done ?? false,
         ]);
 
         $task->save();
