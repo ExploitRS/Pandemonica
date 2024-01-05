@@ -609,4 +609,37 @@ class TasksTest extends TestCase
                         ->where('errors.category', ["The category must be at least 1"])
             );
     }
+
+    public function test_index_category_query(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $category = Category::factory()->create([
+            'label' => 'steins; gate',
+        ]);
+
+        $task->categories()->attach($category);
+
+        $response = $this->get($this->tasks_path . '?category=steins; gate');
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has(1)
+                    ->first(fn (AssertableJson $json) =>
+                        $json->where('id', $task->id)
+                            ->where('title', $task->title)
+                            ->where('description', $task->description)
+                            ->where('due_date', '2045-01-01 00:00:00')
+                            ->where('is_done', $task->is_done)
+                        ->has('categories')
+                            ->whereType('categories', 'array')
+                                ->where('categories.0.id', $category->id)
+                                ->where('categories.0.label', $category->label)
+                        ->etc()
+                    )
+            );
+    }
 }
