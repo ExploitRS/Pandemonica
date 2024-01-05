@@ -46,7 +46,9 @@ class TaskController extends Controller
     }
 
     public function show(Task $task) {
-        return response()->json($task);
+        $response = ['task' => $task];
+        $response['category'] = $task->categories()->first();
+        return response()->json($response);
     }
 
     public function update(UpdateTaskRequest $request, Task $task) {
