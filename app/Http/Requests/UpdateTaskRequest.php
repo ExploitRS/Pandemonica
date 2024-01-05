@@ -15,6 +15,7 @@ class UpdateTaskRequest extends TaskRequest
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string|max:65535',
             'due_date' => 'sometimes|nullable|date|after_or_equal:today',
+            'is_done' => 'sometimes|nullable|boolean',
         ]);
     }
 }

@@ -15,6 +15,7 @@ class StoreTaskRequest extends TaskRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:65535',
             'due_date' => 'nullable|date|after_or_equal:today',
+            'is_done' => 'nullable|boolean',
         ]);
     }
 }

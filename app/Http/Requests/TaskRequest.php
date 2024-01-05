@@ -21,6 +21,7 @@ class TaskRequest extends CategoryIdsRequest
             'description.max' => 'The description cannot be longer than 65535 characters',
             'due_date.date' => 'The due date must be a valid date',
             'due_date.after_or_equal' => 'The due date must be today or later',
+            'is_done.boolean' => 'The is done field must be true or false',
         ]);
     }
 }
