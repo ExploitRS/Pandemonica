@@ -61,7 +61,7 @@ class CategoriesTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "label" => [
                         "The label is required",
                     ],
@@ -92,7 +92,7 @@ class CategoriesTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 "message" => "The given data was invalid.",
-                "data" => [
+                "errors" => [
                     "label" => [
                         "The label is required",
                     ],
