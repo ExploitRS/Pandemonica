@@ -21,22 +21,37 @@ class TasksTest extends TestCase
     {
         parent::setUp();
         
-        $this->postJson($this->tasks_path, [
-            'title' => 'Singularity',
-            'description' => 'The concept and the term *singularity* were popularized by Vernor Vinge',
-            'due_date' => '2045-01-01',
-        ]);
+        // $this->postJson($this->tasks_path, [
+        //     'title' => 'Singularity',
+        //     'description' => 'The concept and the term *singularity* were popularized by Vernor Vinge',
+        //     'due_date' => '2045-01-01',
+        // ]);
 
-        $this->postJson($this->categories_path, [
-            'label' => 'hell',
-        ]);
+        // $this->postJson($this->categories_path, [
+        //     'label' => 'hell',
+        // ]);
     }
 
     public function test_index(): void
     {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
         $response = $this->get($this->tasks_path);
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has(1)
+                    ->first(fn (AssertableJson $json) =>
+                        $json->where('id', $task->id)
+                            ->where('title', $task->title)
+                            ->where('description', $task->description)
+                            ->where('due_date', '2045-01-01 00:00:00')
+                            ->where('is_done', $task->is_done)
+                            ->etc()
+                    )
+            );
     }
 
     public function test_store_success(): void
@@ -48,24 +63,6 @@ class TasksTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-    }
-
-    public function test_index_after_store(): void
-    {
-        $response = $this->get($this->tasks_path);
-
-        $response
-            ->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has(1)
-                    ->first(fn (AssertableJson $json) =>
-                        $json->where('id', 4)
-                            ->where('title', 'Singularity')
-                            ->where('description', 'The concept and the term *singularity* were popularized by Vernor Vinge')
-                            ->where('due_date', '2045-01-01 00:00:00')
-                            ->etc()
-                    )
-        );
     }
 
     public function test_store_failure_due_date(): void
@@ -140,7 +137,10 @@ class TasksTest extends TestCase
 
     public function test_delete_success(): void
     {
-        $response = $this->deleteJson($this->tasks_path . "9");
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+        $response = $this->deleteJson($this->tasks_path . $task->id);
 
         $response
             ->assertStatus(200)
@@ -173,15 +173,18 @@ class TasksTest extends TestCase
 
     public function test_show_success(): void
     {
-        $response = $this->get($this->tasks_path . '12');
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+        $response = $this->get($this->tasks_path . $task->id);
 
         $response
             ->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has('task')
-                    ->where('task.id', 12)
-                    ->where('task.title', 'Singularity')
-                    ->where('task.description', 'The concept and the term *singularity* were popularized by Vernor Vinge')
+                    ->where('task.id', $task->id)
+                    ->where('task.title', $task->title)
+                    ->where('task.description', $task->description)
                     ->where('task.due_date', '2045-01-01 00:00:00')
                 ->has('category')
                     ->where('category', null)
@@ -202,7 +205,11 @@ class TasksTest extends TestCase
 
     public function test_update_success(): void
     {
-        $response = $this->putJson($this->tasks_path . '14', [
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -212,7 +219,7 @@ class TasksTest extends TestCase
             ->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has('task')
-                    ->where('task.id', 14)
+                    ->where('task.id', $task->id)
                     ->where('task.title', 'go to hell')
                     ->where('task.description', 'welcome to the hell')
                     ->where('task.due_date', '2045-01-01')
@@ -222,7 +229,11 @@ class TasksTest extends TestCase
 
     public function test_update_success_patch_method(): void
     {
-        $response = $this->patchJson($this->tasks_path . '15', [
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->patchJson($this->tasks_path . $task->id, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -232,7 +243,7 @@ class TasksTest extends TestCase
             ->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has('task')
-                    ->where('task.id', 15)
+                    ->where('task.id', $task->id)
                     ->where('task.title', 'go to hell')
                     ->where('task.description', 'welcome to the hell')
                     ->where('task.due_date', '2045-01-01')
@@ -257,7 +268,11 @@ class TasksTest extends TestCase
 
     public function test_update_failure_empty_title(): void
     {
-        $response = $this->putJson($this->tasks_path . '17', [
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
             'title' => '',
             'description' => 'welcome to the hell',
             'due_date' => '2045-01-01',
@@ -277,7 +292,11 @@ class TasksTest extends TestCase
 
     public function test_update_failure_invalid_due_date(): void
     {
-        $response = $this->putJson($this->tasks_path . '18', [
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '2020',
@@ -297,7 +316,11 @@ class TasksTest extends TestCase
 
     public function test_update_failure_before_today(): void
     {
-        $response = $this->putJson($this->tasks_path . '19', [
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
             'title' => 'go to hell',
             'description' => 'welcome to the hell',
             'due_date' => '1969-12-31',
@@ -334,12 +357,11 @@ class TasksTest extends TestCase
             ->assertStatus(201)
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has('task')
-                    ->where('task.id', 21)
                     ->where('task.title', 'go to hell')
                     ->where('task.description', 'welcome to the hell')
                     ->where('task.due_date', '2045-01-01')
                 ->has('category')
-                    ->where('category.id', 20)
+                    ->where('category.id', $category->id)
                     ->where('category.label', 'hell')
                     ->etc()
             );
