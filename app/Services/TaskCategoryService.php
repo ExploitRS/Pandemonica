@@ -20,9 +20,7 @@ class TaskCategoryService
         // $task->categories()->attach($cat_id);
         $task->categories()->attach($cat);
 
-        return response()->json([
-            'message' => 'Category added successfully',
-        ], 200);
+        return response()->json($cat, 200);
     }
 
     public function update_category(Task $task, Category $cat): JsonResponse
@@ -35,8 +33,6 @@ class TaskCategoryService
 
         $task->categories()->sync($cat);
 
-        return response()->json([
-            'message' => 'Category updated successfully',
-        ], 200);
+        return response()->json($cat, 200);
     }
 }
