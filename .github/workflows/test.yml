@@ -45,5 +45,14 @@ jobs:
       - name: migrate
         run: ./vendor/bin/sail artisan migrate
       
-      - name: test
+      - name: test all
         run: ./vendor/bin/sail test
+
+      - name: test Tasks
+        run: ./vendor/bin/sail test --filter TasksTest
+
+      - name: test Categories
+        run: ./vendor/bin/sail test --filter CategoriesTest
+      
+      - name: test TaskCategory
+        run: ./vendor/bin/sail test --filter TaskCategoryTest
