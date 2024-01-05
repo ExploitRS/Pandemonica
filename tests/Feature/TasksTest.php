@@ -443,4 +443,148 @@ class TasksTest extends TestCase
                         ->where('errors.category', ["The category must be an integer"])
             );
     }
+
+    public function test_update_success_category(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $category = Category::factory()->create([
+            'label' => 'hell',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [
+                ['category_id' => $category->id],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('task')
+                    ->where('task.id', $task->id)
+                    ->where('task.title', $task->title)
+                    ->where('task.description', $task->description)
+                    ->where('task.due_date', '2045-01-01 00:00:00')
+                    ->where('task.is_done', $task->is_done)
+                ->has('category')
+                    ->where('category.id', $category->id)
+                    ->where('category.label', 'hell')
+                ->etc()
+            );
+    }
+
+    public function test_update_failure_empty_category_ids(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category_ids', ["The category is required"])
+            );
+    }
+
+    public function test_update_failure_multiple_category(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $cat01 = Category::factory()->create([
+            'label' => 'hell',
+        ]);
+
+        $cat02 = Category::factory()->create([
+            'label' => 'heaven',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [
+                ['category_id' => $cat01->id],
+                ['category_id' => $cat02->id],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category_ids', ["The category must contain exactly one element"])
+            );
+    }
+
+    public function test_update_failure_not_found_category(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [
+                ['category_id' => 100],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must exist in the database"])
+            );
+    }
+
+    public function test_update_failure_non_integer_category(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [
+                ['category_id' => 'hell'],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must be an integer"])
+            );
+    }
+
+    public function test_update_failure_negative_category_id(): void
+    {
+        $task = Task::factory()->create([
+            'due_date' => '2045-01-01',
+        ]);
+
+        $response = $this->putJson($this->tasks_path . $task->id, [
+            'category_ids' => [
+                ['category_id' => -1],
+            ],
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', "The given data was invalid.")
+                    ->has('errors')
+                        ->where('errors.category', ["The category must be at least 1"])
+            );
+    }
 }
