@@ -16,7 +16,7 @@ class CategoryIdsRequest extends CommonRequest
     public function rules(): array
     {
         return [
-            'category_ids' => 'required|distinct:strict|array|size:1',
+            'category_ids' => 'required|distinct:strict|array:category_id|size:1',
             'category_ids.*.category_id' => 'integer|min:1|exists:categories,id',
         ];
     }
@@ -37,8 +37,16 @@ class CategoryIdsRequest extends CommonRequest
 
     protected function failedValidation(Validator $validator)
     {
-        $response = ['message' => 'The given data was invalid.', 'errors' => []];
-        $response['errors']['category'] = $validator->errors()->all();
+        $errors = [];
+        $msg = $validator->errors()->getMessages();
+        foreach ($msg as $key => $error) {
+            if (preg_match('/^category_ids\.\d+\.category_id$/', $key)) {
+                $errors['category'] = $error;
+            } else {
+                $errors[$key] = $error;
+            }
+        }
+        $response = ['message' => 'The given data was invalid.', 'errors' => $errors];
 
         throw new HttpResponseException(response()->json($response, JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
