@@ -11,10 +11,10 @@ class StoreTaskRequest extends TaskRequest
      */
     public function rules(): array
     {
-        return [
+        return array_merge(parent::rules(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:65535',
             'due_date' => 'nullable|date|after_or_equal:today',
-        ];
+        ]);
     }
 }
