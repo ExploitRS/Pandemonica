@@ -9,6 +9,7 @@ on:
 
     branches:
       - main
+      - devel
 
   pull_request:
     paths-ignore:
@@ -17,6 +18,7 @@ on:
 
     branches:
       - main
+      - devel
 
 jobs:
   test:
