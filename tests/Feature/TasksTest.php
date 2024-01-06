@@ -199,7 +199,7 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(404)
             ->assertJson([
-                "message" => "The given data was invalid.",
+                "message" => "Task not found",
             ]);
     }
 
@@ -262,7 +262,7 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(404)
             ->assertJson([
-                "message" => "The given data was invalid.",
+                "message" => "Task not found",
             ]);
     }
 
