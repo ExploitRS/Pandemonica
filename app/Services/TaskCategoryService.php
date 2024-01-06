@@ -19,7 +19,7 @@ class TaskCategoryService
 
         $task->categories()->attach($cat);
 
-        return response()->json($cat, 200);
+        return response()->json($cat, 201);
     }
 
     public function update_category(Task $task, Category $cat): JsonResponse
