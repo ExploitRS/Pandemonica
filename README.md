@@ -84,3 +84,7 @@ To display the valid API endpoints
 ## References
 
 - [laratube](https://github.com/miladev95/laratube)
+
+## License
+
+[MIT](https://github.com/ExploitRS/Pandemonica/blob/main/LICENSE)
