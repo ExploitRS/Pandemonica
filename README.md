@@ -28,6 +28,12 @@ And move to the root directory of `Pandemonica`
 cd Pandemonica
 ```
 
+Copy the `.env.example` file to `.env`
+
+```bash
+cp .env.example .env
+```
+
 Install dependencies
 
 ```bash
