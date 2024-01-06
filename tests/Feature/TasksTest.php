@@ -199,7 +199,7 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(404)
             ->assertJson([
-                "message" => "Task not found",
+                "message" => "The task not found",
             ]);
     }
 
@@ -262,7 +262,7 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(404)
             ->assertJson([
-                "message" => "Task not found",
+                "message" => "The task not found",
             ]);
     }
 

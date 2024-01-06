@@ -60,7 +60,7 @@ class TaskController extends Controller
 
         if (!$task) {
             return response()->json([
-                'message' => 'Task not found',
+                'message' => 'The task not found',
             ], 404);
         }
 
@@ -74,7 +74,7 @@ class TaskController extends Controller
 
         if (!$task) {
             return response()->json([
-                'message' => 'Task not found',
+                'message' => 'The task not found',
             ], 404);
         }
 
