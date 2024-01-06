@@ -20,8 +20,16 @@ class TaskCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Task $task)
+    public function index(int $id)
     {
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json([
+                'message' => 'The task is not found',
+            ], 404);
+        }
+
         $categories = $task->categories;
         return response()->json($categories, 200);
     }
@@ -29,8 +37,15 @@ class TaskCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Task $task, CategoryIdsRequest $request)
+    public function store(CategoryIdsRequest $request, int $id)
     {
+        $task = Task::find($id);
+        if (!$task) {
+            return response()->json([
+                'message' => 'The task is not found',
+            ], 404);
+        }
+
         $cat_id = $request->input('category_ids')[0]['category_id'];
         $cat = Category::find($cat_id);
 
@@ -56,15 +71,20 @@ class TaskCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task, Category $category)
+    public function destroy(int $task_id, int $category_int)
     {
-        if (!$task->categories()->find($category->id)) {
+        $task = Task::find($task_id);
+        if (!$task) {
+            return response()->json([
+                'message' => 'The task is not found',
+            ], 404);
+        } else if (!$task->categories()->find($category_int)) {
             return response()->json([
                 'message' => 'The category is not associated with the task',
             ], 404);
         }
 
-        $task->categories()->detach($category);
+        $task->categories()->detach($category_int);
 
         return response()->json([
             'message' => 'The category of the task were deleted successfully',
