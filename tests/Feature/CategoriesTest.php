@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Testing\Fluent\AssertableJson;
 
+use App\Models\Category;
+
 class CategoriesTest extends TestCase
 {
     use RefreshDatabase;
@@ -16,14 +18,12 @@ class CategoriesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->postJson($this->path, [
-            "label" => "hell",
-        ]);
     }
 
     public function test_index(): void
     {
+        $category = Category::factory()->create();
+
         $response = $this->get($this->path);
 
         $response
@@ -31,8 +31,9 @@ class CategoriesTest extends TestCase
             ->assertJson(fn (AssertableJson $json) =>
                 $json->has(1)
                     ->first(fn (AssertableJson $json) =>
-                        $json->where("label", "hell")
-                            ->etc()
+                        $json->where("id", $category->id)
+                            ->where("label", $category->label)
+                        ->etc()
                     )
             );
     }
@@ -45,9 +46,10 @@ class CategoriesTest extends TestCase
 
         $response
             ->assertStatus(201)
-            ->assertJson([
-                "label" => "hell",
-            ]);
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where("label", "hell")
+                ->etc()
+            );
     }
 
     public function test_store_failure_empty_label(): void
@@ -70,7 +72,9 @@ class CategoriesTest extends TestCase
 
     public function test_update_success(): void
     {
-        $response = $this->putJson($this->path . "5", [
+        $category = Category::factory()->create();
+
+        $response = $this->putJson($this->path . $category->id, [
             "label" => "malicious",
         ]);
 
@@ -83,7 +87,9 @@ class CategoriesTest extends TestCase
 
     public function test_update_failure_empty_label(): void
     {
-        $response = $this->putJson($this->path . "6", [
+        $category = Category::factory()->create();
+
+        $response = $this->putJson($this->path . $category->id, [
             "label" => "",
         ]);
 
@@ -101,7 +107,9 @@ class CategoriesTest extends TestCase
 
     public function test_delete_success(): void
     {
-        $response = $this->deleteJson($this->path . "7");
+        $category = Category::factory()->create();
+
+        $response = $this->deleteJson($this->path . $category->id);
 
         $response
             ->assertStatus(200)
@@ -123,13 +131,15 @@ class CategoriesTest extends TestCase
 
     public function test_show_success(): void
     {
-        $response = $this->get($this->path . "9");
+        $category = Category::factory()->create();
+
+        $response = $this->get($this->path . $category->id);
 
         $response
             ->assertStatus(200)
             ->assertJson([
-                "id" => 9,
-                "label" => "hell",
+                "id" => $category->id,
+                "label" => $category->label,
             ]);
     }
 
