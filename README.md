@@ -73,6 +73,14 @@ To run tests for a specific feature
 ./vendor/bin/sail artisan test --filter CategoriesTest
 ```
 
+### Postman test
+
+Before running tests in Postman, the database must be seeded
+
+```bash
+./vendor/bin/sail artisan db:seed
+```
+
 ### API endpoints
 
 To display the valid API endpoints
