@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $count = 10;
+
         $this->call([
             TasksSeeder::class,
             CategoriesSeeder::class,

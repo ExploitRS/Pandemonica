@@ -16,7 +16,7 @@ class TasksSeeder extends Seeder
         Task::factory()
             ->count($count)
             ->create([
-                'due_date' => '2045-01-01'
+                'due_date' => '2045-01-01',
             ]);
     }
 }
