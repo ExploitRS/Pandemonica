@@ -145,7 +145,7 @@ class TasksTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                "message" => "Task deleted successfully",
+                "message" => "The task deleted successfully",
             ]);
     }
 
