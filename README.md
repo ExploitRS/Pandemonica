@@ -10,6 +10,8 @@
     <br/>
 </div>
 
+![test workflow](https://github.com/ExploitRS/Pandemonica/actions/workflows/test.yml/badge.svg)
+
 ## Name
 
 Pandemonica is the name of the customer service representative in [Hell](https://helltaker.fandom.com/wiki/Helltaker_Wiki).
